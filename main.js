@@ -1,24 +1,41 @@
 let {longPromise,shortPromise} = require ('./promise.js');
 
 /**
+ * Ugly nested chaining
+ */
+// longPromise()
+//     .then((data)=>{
+//         console.log(data); // logs: longPromise resolved
+//         shortPromise()
+//             .then((data)=>{
+//                 console.log(data) // logs: shortPromise resolved
+//             })
+//             .catch((data)=>{
+//                 console.log(data) // logs: shortPromise rejected
+//             })
+//     .catch((data)=>{
+//         console.log(data) // logs: longPromise rejected
+//
+//         // shortPromise is unhandled in case longPromise was rejected
+//     });
+// });
+
+/**
  * Classic chaining
+ *  one catch to reject them all!
  */
 longPromise()
-    .then((data)=>{
+    .then((data)=> {
         console.log(data); // logs: longPromise resolved
-        shortPromise()
-            .then((data)=>{
-                console.log(data) // logs: shortPromise resolved
-            })
-            .catch((data)=>{
-                console.log(data) // logs: shortPromise rejected
-            })
-    .catch((data)=>{
-        console.log(data) // logs: longPromise rejected
-
-        // shortPromise is unhandled in case longPromise was rejected
+        return shortPromise();
+    })
+    .then((data)=>{
+        console.log(data) // logs: shortPromise resolved
+    })
+    .catch((error)=> {
+        console.log(error);
     });
-});
+
 
 /**
  * Aggregating in an array, using the all() method
